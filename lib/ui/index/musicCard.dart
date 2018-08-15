@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:math';
 import './bottom.dart';
 
@@ -77,13 +78,35 @@ class RotatedCardState extends State<RotatedCard> with SingleTickerProviderState
   final String imgUrl;
   RotatedCardState(this.imgUrl);
 
+  // 动画
   AnimationController controller;
   Animation<double> animation;
 
+  // 音乐
+  VideoPlayerController _musicController;
+  bool _isPlaying = false;
+
   bool isPlayed = false;
 
+  @override
   initState() {
     super.initState();
+    _musicController = VideoPlayerController.network(
+      'https://m10.music.126.net/20180815214519/a4fc12befc56a9146535b4c1f96032d7/ymusic/60a6/d366/0ca4/119f1ac6091c3ce84085b8fd285f2fe2.mp3',
+    )
+      ..addListener(() {
+        final bool isPlaying = _musicController.value.isPlaying;
+        if (isPlaying != _isPlaying) {
+          setState(() {
+            _isPlaying = isPlaying;
+          });
+        }
+      })
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
+
     controller = AnimationController(
       duration: const Duration(milliseconds: 20000), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.linear);
@@ -98,6 +121,8 @@ class RotatedCardState extends State<RotatedCard> with SingleTickerProviderState
   }
 
   togglePress() {
+    _musicController.value.isPlaying ? _musicController.pause() : _musicController.play();
+
     if (animation.status == AnimationStatus.forward && !isPlayed) {
       isPlayed = true;
       controller.stop();
