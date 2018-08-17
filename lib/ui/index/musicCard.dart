@@ -92,7 +92,7 @@ class RotatedCardState extends State<RotatedCard> with SingleTickerProviderState
   initState() {
     super.initState();
     _musicController = VideoPlayerController.network(
-      'https://m10.music.126.net/20180815214519/a4fc12befc56a9146535b4c1f96032d7/ymusic/60a6/d366/0ca4/119f1ac6091c3ce84085b8fd285f2fe2.mp3',
+      'http://140.143.229.247/pazi.mp3',
     )
       ..addListener(() {
         final bool isPlaying = _musicController.value.isPlaying;
